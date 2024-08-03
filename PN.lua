@@ -71,10 +71,10 @@ local function autoWalk()
             humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         end
 
-        local speed = 375
+        local speed = 400
 
         local positions = {
-            Vector3.new(-100.3891983, 45.759857, 800.162481),
+			Vector3.new(-100.3891983, 45.759857, 800.162481),
             Vector3.new(-100.3891983, 45.759857, 1367.16248),
             Vector3.new(-100.9626236, 45.073517, 2136.87646),
             Vector3.new(-100.7347946, 45.590759, 2908.04907),
@@ -84,7 +84,7 @@ local function autoWalk()
             Vector3.new(-100.0792274, 45.107323, 5985.90527),
             Vector3.new(-100.6662369, 45.504257, 6756.76367),
             Vector3.new(-100.2724304, 45.663834, 7531.16504),
-			Vector3.new(-100.2724304, 45.663834, 7531.16504),
+			Vector3.new(-100.8484573, 45.640503, 8297.49023),
 			Vector3.new(-55.8801956, -361.116333, 9488.1377),
 			Vector3.new(-55.8801956, -361.116333, 9488.1377)
         }
