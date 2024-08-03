@@ -71,7 +71,7 @@ local function autoWalk()
             humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         end
 
-        local speed = 400
+        local speed = 300
 
         local positions = {
 			Vector3.new(-100.3891983, 45.759857, 800.162481),
@@ -92,7 +92,7 @@ local function autoWalk()
         for _, position in ipairs(positions) do
             if not Toggle.Value then return end
             moveToPosition(position, speed)
-            wait(2)
+            wait(3)
         end
 
 
