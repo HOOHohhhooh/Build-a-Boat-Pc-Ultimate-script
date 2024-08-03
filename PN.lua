@@ -99,7 +99,7 @@ local function autoWalk()
         wait(3)
 
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-55.8801956, -361.116333, 9488.1377)
-        wait(18)
+        wait(20)
     end
 end
 
