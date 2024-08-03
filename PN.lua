@@ -27,6 +27,9 @@ do
         Title = "Build a Boat Pc Ultimate Script",
     })
 
+	    Tabs.General:AddParagraph({
+        Title = "",
+    })
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
