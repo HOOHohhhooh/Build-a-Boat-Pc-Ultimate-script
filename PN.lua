@@ -38,21 +38,28 @@ local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
 local Toggle = Tabs.General:AddToggle("MyToggle", {Title = "Auto Farm", Default = false })
 
+local isMoving = false
+
 local function moveToPosition(position, speed)
+    if isMoving then return end
+    isMoving = true
+
     humanoid.WalkSpeed = speed
     humanoid:MoveTo(position)
 
     local moveToConnection
     moveToConnection = humanoid.MoveToFinished:Connect(function(reached)
         if reached then
-            print("", position)
-            moveToConnection:Disconnect()
+            print("Reached", position)
         else
-            print("", position)
-            moveToConnection:Disconnect()
+            print("Did not reach", position)
         end
+        isMoving = false
+        moveToConnection:Disconnect()
     end)
 end
+
+local autoWalkCoroutine
 
 local function autoWalk()
     while Toggle.Value do
@@ -63,43 +70,34 @@ local function autoWalk()
             humanoid = character:WaitForChild("Humanoid")
             humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         end
-        
+
         local speed = 450
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-100.3891983, 45.759857, 800.16248)
-        wait(1)
 
-		moveToPosition(Vector3.new(-100.3891983, 45.759857, 1367.16248), speed)
-        wait(2)
+        local positions = {
+            Vector3.new(-100.3891983, 45.759857, 800.162481),
+            Vector3.new(-100.3891983, 45.759857, 1367.16248),
+            Vector3.new(-100.9626236, 45.073517, 2136.87646),
+            Vector3.new(-100.7347946, 45.590759, 2908.04907),
+            Vector3.new(-100.0725594, 45.263581, 3677.34595),
+            Vector3.new(-100.7233849, 45.163925, 4447.53027),
+            Vector3.new(-100.8003578, 45.784531, 5220.36328),
+            Vector3.new(-100.0792274, 45.107323, 5985.90527),
+            Vector3.new(-100.6662369, 45.504257, 6756.76367),
+            Vector3.new(-100.2724304, 45.663834, 7531.16504),
+			Vector3.new(-100.2724304, 45.663834, 7531.16504),
+			Vector3.new(-55.8801956, -361.116333, 9488.1377),
+			Vector3.new(-55.8801956, -361.116333, 9488.1377)
+        }
 
-        moveToPosition(Vector3.new(-100.9626236, 45.073517, 2136.87646), speed)
-        wait(2)
+        for _, position in ipairs(positions) do
+            if not Toggle.Value then return end
+            moveToPosition(position, speed)
+            wait(3)
+        end
 
-        moveToPosition(Vector3.new(-100.7347946, 45.590759, 2908.04907), speed)
-        wait(2)
-
-        moveToPosition(Vector3.new(-100.0725594, 45.26358, 3677.34595), speed)
-        wait(2)
-
-        moveToPosition(Vector3.new(-100.7233849, 45.163925, 4447.53027), speed)
-        wait(2)
-
-        moveToPosition(Vector3.new(-100.8003578, 45.784531, 5220.36328), speed)
-        wait(2)
-
-        moveToPosition(Vector3.new(-100.0792274, 45.107323, 5985.90527), speed)
-        wait(2)
-
-        moveToPosition(Vector3.new(-100.6662369, 45.504257, 6756.76367), speed)
-        wait(2)
-
-        moveToPosition(Vector3.new(-100.2724304, 45.663834, 7531.16504), speed)
-        wait(2)
-
-        moveToPosition(Vector3.new(-100.8484573, 45.640503, 8297.49023), speed)
-        wait(3)
-
+        if not Toggle.Value then return end
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-55.8801956, -361.116333, 9488.1377)
-        wait(20)
+        wait(18)
     end
 end
 
@@ -110,47 +108,83 @@ local function createAndTrackPart()
     end
 
     local PN = Instance.new("Part")
-    PN.Size = Vector3.new(50, -0.5, 50)
+    PN.Size = Vector3.new(50, 0.2, 50)
     PN.Anchored = true
     PN.CanCollide = true
     PN.Transparency = 0
-    PN.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -3, 0)
+    PN.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -3, 0)
     PN.Name = "CustomPN"
     PN.Parent = workspace
 
     local function updatePosition()
-        if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            PN.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -3, 0)
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            PN.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -3, 0)
         end
     end
 
     RunService.RenderStepped:Connect(updatePosition)
 end
 
+local noclipConnection
+
+local function enableNoclip()
+    noclipConnection = RunService.Stepped:Connect(function()
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            for _, v in pairs(LocalPlayer.Character:GetDescendants()) do
+                if v:IsA("BasePart") and v.CanCollide then
+                    v.CanCollide = false
+                end
+            end
+        end
+    end)
+end
+
+local function disableNoclip()
+    if noclipConnection then
+        noclipConnection:Disconnect()
+        noclipConnection = nil
+    end
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        for _, v in pairs(LocalPlayer.Character:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.CanCollide = true
+            end
+        end
+    end
+end
+
 Toggle:OnChanged(function()
-    print("Toggle changed:", Toggle.Value)
+    print("Toggle value changed to", Toggle.Value)
     if Toggle.Value then
-        spawn(autoWalk)
+        autoWalkCoroutine = coroutine.create(autoWalk)
+        coroutine.resume(autoWalkCoroutine)
         createAndTrackPart()
+        enableNoclip()
     else
         local existingPart = workspace:FindFirstChild("CustomPN")
         if existingPart then
             existingPart:Destroy()
         end
+        if autoWalkCoroutine then
+            coroutine.close(autoWalkCoroutine)
+        end
+        disableNoclip()
     end
 end)
 
 Toggle:SetValue(false)
 
 LocalPlayer.CharacterAdded:Connect(function()
+    wait(2)
     character = LocalPlayer.Character
     humanoid = character:WaitForChild("Humanoid")
     humanoidRootPart = character:WaitForChild("HumanoidRootPart")
     if Toggle.Value then
-        spawn(autoWalk)
+        autoWalkCoroutine = coroutine.create(autoWalk)
+        coroutine.resume(autoWalkCoroutine)
+        enableNoclip()
     end
 end)
-
 
 
 
