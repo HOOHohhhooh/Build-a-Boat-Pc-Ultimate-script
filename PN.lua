@@ -71,7 +71,7 @@ local function autoWalk()
             humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         end
 
-        local speed = 450
+        local speed = 300
 
         local positions = {
             Vector3.new(-100.3891983, 45.759857, 800.162481),
@@ -92,8 +92,9 @@ local function autoWalk()
         for _, position in ipairs(positions) do
             if not Toggle.Value then return end
             moveToPosition(position, speed)
-            wait(3)
+            wait(2)
         end
+
 
         if not Toggle.Value then return end
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-55.8801956, -361.116333, 9488.1377)
@@ -185,7 +186,6 @@ LocalPlayer.CharacterAdded:Connect(function()
         enableNoclip()
     end
 end)
-
 
 
 
